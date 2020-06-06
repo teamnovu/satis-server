@@ -22,4 +22,4 @@ jobs:
             password: ${{ secrets.GITHUB_TOKEN }}
             registry: docker.pkg.github.com
             repository: okaufmann/satis-server
-            tags: latest
+            tag_with_ref: true
