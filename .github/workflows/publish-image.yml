@@ -7,6 +7,11 @@ jobs:
     steps:
         - uses: actions/checkout@v2
 
+        - name: Generate Docs
+          run: |
+            docker run -v `pwd`:/source jagregory/pandoc -f markdown -t html README.md -o README.html
+            sed '/^\[!\[/d; /^!\[/d' README.md > README.txt
+
         - name: Push to GitHub Packages
           uses: docker/build-push-action@v1
           with:
@@ -15,3 +20,6 @@ jobs:
             registry: docker.pkg.github.com
             repository: okaufmann/satis-server
             tags: latest
+          env:
+            SATIS_SERVER_VERSION: dev-master
+            WEBHOOK_VERSION: 2.7.0
