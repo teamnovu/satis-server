@@ -1,7 +1,9 @@
 name: Publish Docker
 on: [push]
 jobs:
-  build:
+  publish:
+    name: Build and Publish
+
     runs-on: ubuntu-latest
 
     steps:
