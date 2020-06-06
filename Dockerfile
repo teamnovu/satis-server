@@ -30,6 +30,9 @@ RUN apk -U add jq nginx && \
     echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config && \
     mkdir -p /root/.ssh/satis-server /etc/webhook
 
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    chmod +x /usr/local/bin/composer
+
 ADD . .
 COPY --from=webhook /usr/local/bin/webhook /satis-server/bin/webhook
 COPY --from=ts /ts /satis-server/bin/ts
