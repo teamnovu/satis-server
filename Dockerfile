@@ -1,5 +1,5 @@
 ARG WEBHOOK_VERSION
-FROM alpine:3.7 as ts
+FROM alpine:3.12 as ts
 ENV TS_VERSION 1.0
 
 WORKDIR /tmp

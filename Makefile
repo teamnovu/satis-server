@@ -4,7 +4,7 @@ IMAGE_NAME ?= lukaszlach/satis-server
 IMAGE_TAG ?= $(or ${CI_COMMIT_TAG}, latest)
 VERSION ?= $(or ${CI_COMMIT_TAG}, dev-master)
 BUILD_ID ?= -
-WEBHOOK_VERSION ?= 2.6.5
+WEBHOOK_VERSION ?= 2.7.0
 TEST_HOSTNAME ?= localhost
 
 .PHONY: man build push start stop restart run simple-run docker-compose-run cli
