@@ -11,7 +11,7 @@ jobs:
 
         - name: Generate Docs
           run: |
-            docker run -v `pwd`:/source jagregory/pandoc -f markdown -t html README.md -o README.html
+            docker run -v `pwd`:/source jagregory/pandoc --toc -c docs.css --self-contained -f markdown_github -t html5 README.md -o README.html
             sed '/^\[!\[/d; /^!\[/d' README.md > README.txt
 
         - name: Push to GitHub Packages

@@ -13,7 +13,7 @@ build: man
 	docker build --force-rm --rm --compress --build-arg SATIS_SERVER_VERSION="$(VERSION) (build $(BUILD_ID))" --build-arg WEBHOOK_VERSION="$(WEBHOOK_VERSION)" -t $(IMAGE_NAME):$(IMAGE_TAG) .
 
 man:
-	docker run -v `pwd`:/source jagregory/pandoc -f markdown -t html README.md -o README.html
+	docker run -v `pwd`:/source jagregory/pandoc --toc -c docs.css --self-contained -f markdown_github -t html5 README.md -o README.html
 	sed '/^\[!\[/d; /^!\[/d' README.md > README.txt
 
 push:
