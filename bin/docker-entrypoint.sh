@@ -19,6 +19,7 @@ if [ "$SATIS_REBUILD_AT" ]; then
 fi
 mkdir -p /etc/satis-server /var/satis-server
 if [ -f /etc/satis-server/ssh/id_rsa ]; then
+    echo "setting up ssh keys"
     mkdir -p /root/.ssh/satis-server
     cp -R /etc/satis-server/ssh/* /root/.ssh/satis-server
     chmod 700 /root/.ssh/satis-server/*
