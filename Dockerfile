@@ -54,5 +54,5 @@ VOLUME /etc/satis /etc/satis-server /var/satis-server
 HEALTHCHECK --interval=1m --timeout=10s \
   CMD ( curl -f http://localhost:80/ping && curl -f http://localhost:9000/api/ping ) || exit 1
 
-ENTRYPOINT ["/sbin/tini", "-g", "--", "/satis-server/bin/docker-entrypoint.sh"]
+ENTRYPOINT ["/satis-server/bin/docker-entrypoint.sh"]
 CMD ["satis-server"]

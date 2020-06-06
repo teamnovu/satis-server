@@ -11,6 +11,7 @@ if [ "$1" == "satis-server" ] && [ ! -f /etc/satis/satis.json ]; then
 fi
 set -e
 if [ "$SATIS_REBUILD_AT" ]; then
+    echo "setting up cronjob at $SATIS_REBUILD_AT"
     echo "$SATIS_REBUILD_AT /usr/local/bin/satis-build-all" > /tmp/crontab
     crontab /tmp/crontab
     rm -f /tmp/crontab
@@ -24,4 +25,4 @@ if [ -f /etc/satis-server/ssh/id_rsa ]; then
     echo "IdentityFile ~/.ssh/satis-server/id_rsa" >> /etc/ssh/ssh_config
 fi
 set +e
-exec /sbin/tini -g -s -- /satis/bin/docker-entrypoint.sh "$@"
+exec /satis/bin/docker-entrypoint.sh "$@"
