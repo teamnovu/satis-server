@@ -17,11 +17,9 @@ jobs:
         - name: Push to GitHub Packages
           uses: docker/build-push-action@v1
           with:
+            build_args: WEBHOOK_VERSION=2.7.0,SATIS_SERVER_VERSION=dev-master
             username: ${{ github.actor }}
             password: ${{ secrets.GITHUB_TOKEN }}
             registry: docker.pkg.github.com
             repository: okaufmann/satis-server
             tags: latest
-          env:
-            SATIS_SERVER_VERSION: dev-master
-            WEBHOOK_VERSION: 2.7.0
