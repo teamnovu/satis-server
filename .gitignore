@@ -7,3 +7,5 @@ test/*
 bin/webhook
 README.html
 README.txt
+.data
+docker-compose.yml
