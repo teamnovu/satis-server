@@ -1,5 +1,5 @@
 ARG WEBHOOK_VERSION
-FROM alpine:3.12 as ts
+FROM alpine:3.16 as ts
 ENV TS_VERSION 1.0
 
 WORKDIR /tmp
@@ -15,13 +15,13 @@ FROM almir/webhook:${WEBHOOK_VERSION} as webhook
 FROM composer/satis
 ARG SATIS_SERVER_VERSION
 LABEL maintainer="Łukasz Lach <llach@llach.pl>" \
-      org.label-schema.name="satis-server" \
-      org.label-schema.description="Satis Server" \
-      org.label-schema.usage="https://github.com/lukaszlach/satis-server/blob/master/README.md" \
-      org.label-schema.url="https://github.com/lukaszlach/satis-server" \
-      org.label-schema.vcs-url="https://github.com/lukaszlach/satis-server" \
-      org.label-schema.version="${SATIS_SERVER_VERSION:-dev-master}" \
-      org.label-schema.schema-version="1.1"
+    org.label-schema.name="satis-server" \
+    org.label-schema.description="Satis Server" \
+    org.label-schema.usage="https://github.com/lukaszlach/satis-server/blob/master/README.md" \
+    org.label-schema.url="https://github.com/lukaszlach/satis-server" \
+    org.label-schema.vcs-url="https://github.com/lukaszlach/satis-server" \
+    org.label-schema.version="${SATIS_SERVER_VERSION:-dev-master}" \
+    org.label-schema.schema-version="1.1"
 ENV SATIS_SERVER_VERSION ${SATIS_SERVER_VERSION:-dev-master}
 WORKDIR /satis-server
 
@@ -55,7 +55,7 @@ RUN ln -s /satis-server/webhook/hooks.json /etc/webhook/hooks.json && \
 EXPOSE 80/tcp 443/tcp
 VOLUME /etc/satis /etc/satis-server /var/satis-server
 HEALTHCHECK --interval=1m --timeout=10s \
-  CMD ( curl -f http://localhost:80/ping && curl -f http://localhost:9000/api/ping ) || exit 1
+    CMD ( curl -f http://localhost:80/ping && curl -f http://localhost:9000/api/ping ) || exit 1
 
 ENTRYPOINT ["/satis-server/bin/docker-entrypoint.sh"]
 CMD ["satis-server"]
