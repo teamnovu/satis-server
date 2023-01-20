@@ -31,7 +31,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            docker pull ghcr.io/okaufmann/satis-server
+            ghcr.io/okaufmann/satis-server
           # generate Docker tags based on the following events/attributes
           tags: |
             type=schedule
