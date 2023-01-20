@@ -53,7 +53,9 @@ jobs:
       - name: Push to GitHub Packages
         uses: docker/build-push-action@v3
         with:
-          build-args: WEBHOOK_VERSION=2.8.0,SATIS_SERVER_VERSION=dev-main
+          build-args: |
+            WEBHOOK_VERSION=2.8.0
+            SATIS_SERVER_VERSION=dev-main
           context: .
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
