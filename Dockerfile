@@ -20,9 +20,9 @@ LABEL maintainer="Łukasz Lach <llach@llach.pl>" \
     org.label-schema.usage="https://github.com/lukaszlach/satis-server/blob/master/README.md" \
     org.label-schema.url="https://github.com/lukaszlach/satis-server" \
     org.label-schema.vcs-url="https://github.com/lukaszlach/satis-server" \
-    org.label-schema.version="${SATIS_SERVER_VERSION:-dev-master}" \
+    org.label-schema.version="${SATIS_SERVER_VERSION:-dev-main}" \
     org.label-schema.schema-version="1.1"
-ENV SATIS_SERVER_VERSION ${SATIS_SERVER_VERSION:-dev-master}
+ENV SATIS_SERVER_VERSION ${SATIS_SERVER_VERSION:-dev-main}
 WORKDIR /satis-server
 
 RUN apk -U add jq nginx tini && \

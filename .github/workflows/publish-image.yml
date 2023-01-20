@@ -7,19 +7,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-        - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-        - name: Generate Docs
-          run: |
-            docker run -v `pwd`:/source jagregory/pandoc --toc -c docs.css --self-contained -f markdown_github -t html5 README.md -o README.html
-            sed '/^\[!\[/d; /^!\[/d' README.md > README.txt
+      - name: Generate Docs
+        run: |
+          docker run -v `pwd`:/source jagregory/pandoc --toc -c docs.css --self-contained -f markdown_github -t html5 README.md -o README.html
+          sed '/^\[!\[/d; /^!\[/d' README.md > README.txt
 
-        - name: Push to GitHub Packages
-          uses: docker/build-push-action@v1
-          with:
-            build_args: WEBHOOK_VERSION=2.7.0,SATIS_SERVER_VERSION=dev-master
-            username: ${{ github.actor }}
-            password: ${{ secrets.GITHUB_TOKEN }}
-            registry: docker.pkg.github.com
-            repository: ${{github.repository}}/satis-server
-            tag_with_ref: true
+      - name: Push to GitHub Packages
+        uses: docker/build-push-action@v1
+        with:
+          build_args: WEBHOOK_VERSION=2.8.0,SATIS_SERVER_VERSION=dev-main
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          repository: ${{github.repository}}/satis-server
+          tag_with_ref: true
