@@ -25,7 +25,7 @@ LABEL maintainer="Łukasz Lach <llach@llach.pl>" \
 ENV SATIS_SERVER_VERSION ${SATIS_SERVER_VERSION:-dev-main}
 WORKDIR /satis-server
 
-RUN apk -U add jq nginx tini && \
+RUN apk -U add jq nginx tini php8.2 php8.2-fpm && \
     rm -rf /var/cache/apk/* /etc/nginx/conf.d/* && \
     echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config && \
     mkdir -p /root/.ssh/satis-server /etc/webhook
@@ -34,6 +34,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
     chmod +x /usr/local/bin/composer
 
 ADD . .
+ADD auth.php /var/www/html
 COPY --from=webhook /usr/local/bin/webhook /satis-server/bin/webhook
 COPY --from=ts /ts /satis-server/bin/ts
 
