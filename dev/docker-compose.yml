@@ -10,7 +10,7 @@ services:
     image: 'satis-server-dev:latest'
     environment:
       DEBUG_MODE_ENABLED: true
-      BEARER_UPSTREAM_ENDPOINT: 'https://inbudget.jkweb.ch/api/users/current'
+      BEARER_UPSTREAM_ENDPOINT: 'https://idp.example.com/api/auth/profile'
     build:
       context: ../.
       dockerfile: Dockerfile
