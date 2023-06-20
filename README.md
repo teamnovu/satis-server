@@ -24,7 +24,7 @@ The `users.json` file has the following format:
 
 `d` is a little helper script to run docker compose commands with typing less and having the docker-compose.yml in a subfolder.
 
-'''
+```bash
 ./d build --pull --build-arg WEBHOOK_VERSION=2.8.0 --build-arg SATIS_SERVER_VERSION=dev-main --progress=plain && ./d up -d --force-recreate --remove-orphans && ./d logs -f
 ```
 
