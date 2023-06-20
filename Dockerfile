@@ -26,7 +26,7 @@ ENV SATIS_SERVER_VERSION ${SATIS_SERVER_VERSION:-dev-main}
 WORKDIR /satis-server
 
 RUN apk update && \
-    apk -U add jq nginx tini php82 php82-fpm && \
+    apk -U add jq nginx tini php82 php82-fpm php82-curl supervisor && \
     rm -rf /var/cache/apk/* /etc/nginx/conf.d/* && \
     echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config && \
     mkdir -p /root/.ssh/satis-server /etc/webhook && \
@@ -40,7 +40,15 @@ RUN apk update && \
     chown -R nginx:nginx /var/run/php-fpm && chmod 755 /var/run/php-fpm && \
     sed -i 's/user = nobody/user = nginx/g' /etc/php82/php-fpm.d/www.conf && \
     sed -i 's/group = nobody/group = nginx/g' /etc/php82/php-fpm.d/www.conf && \
+    # Fix error logging
+    sed -i 's/;error_log = syslog/error_log = \/dev\/stderr/g' /etc/php82/php.ini && \
+    echo "catch_workers_output = yes" >> /etc/php82/php-fpm.d/www.conf && \
+    echo "decorate_workers_output = no" >> /etc/php82/php-fpm.d/www.conf && \
+    # do not clear env variables
+    echo "clear_env = no" >> /etc/php82/php-fpm.d/www.conf  && \
+    # Dont expose PHP version
     echo "expose_php=off" >> /etc/php82/conf.d/99-overrides.ini && \
+    # Check syntax for nginx
     nginx -t
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
@@ -48,6 +56,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 ADD . .
 ADD auth.php /var/www/html
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY --from=webhook /usr/local/bin/webhook /satis-server/bin/webhook
 COPY --from=ts /ts /satis-server/bin/ts
 
@@ -71,5 +80,6 @@ VOLUME /etc/satis /etc/satis-server /var/satis-server
 HEALTHCHECK --interval=1m --timeout=10s \
     CMD ( curl -f http://localhost:80/ping && curl -f http://localhost:9000/api/ping ) || exit 1
 
-ENTRYPOINT ["/satis-server/bin/docker-entrypoint.sh"]
-CMD ["satis-server"]
+# ENTRYPOINT ["/satis-server/bin/docker-entrypoint.sh"]
+# CMD ["satis-server"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
