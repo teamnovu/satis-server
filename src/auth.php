@@ -3,7 +3,7 @@
 const HTTP_OK = 204;
 const HTTP_UNAUTHORIZED = 401;
 const USERS_FILE = '/etc/satis-server/users.json';
-const INBUDGET_URL = 'https://inbudget.jkweb.ch/api/users/current';
+define('BEARER_UPSTREAM_ENDPOINT', getenv('BEARER_UPSTREAM_ENDPOINT') ?? '');
 define('DEBUG_MODE_ENABLED', getenv('DEBUG_MODE_ENABLED') ?? false);
 
 function logMessage($message)
@@ -43,25 +43,29 @@ function isLocalUserValid(string $user, string $password): bool
     return false;
 }
 
-function isInbudgetUserValid(string $authorization): bool
+function isValidBearerToken(string $authorization): bool
 {
+    if (!BEARER_UPSTREAM_ENDPOINT) {
+        return false;
+    }
+
     if (substr($authorization, 0, 7) !== 'Bearer ') {
         return false;
     }
 
     try {
-        $curlHandler = curl_init(INBUDGET_URL);
+        $curlHandler = curl_init(BEARER_UPSTREAM_ENDPOINT);
         curl_setopt($curlHandler, CURLOPT_HTTPHEADER, ["Authorization: $authorization\r\n"]);
         curl_setopt($curlHandler, CURLOPT_RETURNTRANSFER, true);
         curl_exec($curlHandler);
         $httpCode = curl_getinfo($curlHandler, CURLINFO_HTTP_CODE);
         curl_close($curlHandler);
 
-        logMessage("inbudget http code: $httpCode\n");
+        logMessage("bearer check http code: $httpCode\n");
 
         return ($httpCode < 300 && $httpCode >= 200);
     } catch (\Throwable $e) {
-        logMessage("inbudget error: {$e->getMessage()}\n");
+        logMessage("bearer check error: {$e->getMessage()}\n");
 
         return false;
     }
@@ -85,9 +89,9 @@ if ($user !== null && $password !== null && isLocalUserValid($user, $password)) 
     exit();
 }
 
-logMessage("checking inbudget");
+logMessage("try to check bearer token");
 
-if (isInbudgetUserValid($authorization)) {
+if (isValidBearerToken($authorization)) {
     http_response_code(HTTP_OK);
     exit();
 }

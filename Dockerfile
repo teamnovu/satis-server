@@ -55,7 +55,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
     chmod +x /usr/local/bin/composer
 
 ADD . .
-ADD auth.php /var/www/html
+ADD src/auth.php /var/www/html
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY --from=webhook /usr/local/bin/webhook /satis-server/bin/webhook
 COPY --from=ts /ts /satis-server/bin/ts
