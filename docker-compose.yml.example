@@ -1,7 +1,7 @@
 version: "2.1"
 services:
     satis-server:
-        image: ghcr.io/okaufmann/satis-server:latest
+        image: ghcr.io/teamnovu/satis-server:latest
         container_name: satis_server
         restart: unless-stopped
         ports:
