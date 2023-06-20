@@ -1,6 +1,6 @@
 SHELL = /bin/bash
-#DOCKER_REPOSITORY := registry-gitlab.llach.pl/llach/satis-server
-IMAGE_NAME ?= lukaszlach/satis-server
+DOCKER_REPOSITORY := ghcr.io/okaufmann/satis-server
+IMAGE_NAME ?= satis-server
 IMAGE_TAG ?= $(or ${CI_COMMIT_TAG}, latest)
 VERSION ?= $(or ${CI_COMMIT_TAG}, dev-master)
 BUILD_ID ?= -
@@ -22,7 +22,7 @@ push:
 	docker push $(IMAGE_NAME):$(IMAGE_TAG)
 
 start:
-	docker run -d -p 9000:80 -v `pwd`/test/:/etc/satis/ -v `pwd`/var/:/var/satis-server/ --name satis_server $(IMAGE_NAME):$(IMAGE_TAG)
+	docker run -d -p 9100:80 -v `pwd`/test/:/etc/satis/ -v `pwd`/var/:/var/satis-server/ --name satis_server $(IMAGE_NAME):$(IMAGE_TAG)
 	docker ps
 
 stop:
@@ -34,10 +34,10 @@ restart: stop start
 run:
 	if [ ! -d etc/ ]; then mkdir etc/; fi
 	if [ ! -d var/ ]; then mkdir var/; fi
-	docker run --rm -it -p 9000:80 -v `pwd`/test/:/etc/satis/ -v `pwd`/var/:/var/satis-server/ -v `pwd`/etc/:/etc/satis-server/ -v `pwd`/nginx/:/satis-server/nginx/ -e SATIS_REBUILD_AT="0 1 * * *" -e TZ="$$(date +%z | cut -c1 | tr + _ | tr - + | tr _ -)$$((`date +%z | cut -c3-5` / 100))" -e SSL_PORT=443 -e PUSH_SECRET=d5a7c0d0c897665588cd0844744e3109 -e API_ALLOW=0.0.0.0/0 --name satis_server $(IMAGE_NAME):$(IMAGE_TAG)
+	docker run --rm -it -p 9100:80 -v `pwd`/test/:/etc/satis/ -v `pwd`/var/:/var/satis-server/ -v `pwd`/etc/:/etc/satis-server/ -v `pwd`/nginx/:/satis-server/nginx/ -e SATIS_REBUILD_AT="0 1 * * *" -e TZ="$$(date +%z | cut -c1 | tr + _ | tr - + | tr _ -)$$((`date +%z | cut -c3-5` / 100))" -e SSL_PORT=443 -e PUSH_SECRET=d5a7c0d0c897665588cd0844744e3109 -e API_ALLOW=0.0.0.0/0 --name satis_server $(IMAGE_NAME):$(IMAGE_TAG)
 
 simple-run:
-	docker run -d -p 9000:80 -v /etc/satis:/etc/satis/ -v /etc/satis-server/:/etc/satis-server/ -v /var/satis-server/:/var/satis-server/ --name satis_server $(IMAGE_NAME):$(IMAGE_TAG)
+	docker run -p 9100:80 -v /etc/satis:/etc/satis/ -v /etc/satis-server/:/etc/satis-server/ -v /var/satis-server/:/var/satis-server/ --name satis_server $(IMAGE_NAME):$(IMAGE_TAG)
 
 docker-compose-run:
 	sed 's/latest/$(IMAGE_TAG)/g' docker-compose.yml.example > docker-compose.yml.example.1

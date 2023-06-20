@@ -29,7 +29,19 @@ RUN apk update && \
     apk -U add jq nginx tini php82 php82-fpm && \
     rm -rf /var/cache/apk/* /etc/nginx/conf.d/* && \
     echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config && \
-    mkdir -p /root/.ssh/satis-server /etc/webhook
+    mkdir -p /root/.ssh/satis-server /etc/webhook && \
+    # use socket for php-fpm
+    sed -i 's/listen = 127.0.0.1:9000/listen = \/var\/run\/php-fpm\/php-fpm.sock/g' /etc/php82/php-fpm.d/www.conf && \
+    mkdir -p /var/run/php-fpm && \
+    # Change user and group for PHP-FPM
+    sed -i 's/;listen.owner = nobody/listen.owner = nginx/g' /etc/php82/php-fpm.d/www.conf && \
+    sed -i 's/;listen.group = nobody/listen.group = nginx/g' /etc/php82/php-fpm.d/www.conf && \
+    sed -i 's/;listen.mode = 0660/listen.mode = 0660/g' /etc/php82/php-fpm.d/www.conf && \
+    chown -R nginx:nginx /var/run/php-fpm && chmod 755 /var/run/php-fpm && \
+    sed -i 's/user = nobody/user = nginx/g' /etc/php82/php-fpm.d/www.conf && \
+    sed -i 's/group = nobody/group = nginx/g' /etc/php82/php-fpm.d/www.conf && \
+    echo "expose_php=off" >> /etc/php82/conf.d/99-overrides.ini && \
+    nginx -t
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     chmod +x /usr/local/bin/composer

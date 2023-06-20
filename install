@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-DOCKER_IMAGE=lukaszlach/satis-server
+DOCKER_IMAGE=ghcr.io/okaufmann/satis-server:latest
 DOCKER_TAG=${SATIS_SERVER_VERSION:-latest}
 [ "$DOCKER_TAG" == "master" ] && DOCKER_TAG=latest
 DOCKER_CONTAINER_NAME=satis_server
