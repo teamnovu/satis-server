@@ -10,9 +10,9 @@ RUN apk add -U wget make gcc linux-headers g++ && \
     make && \
     mv ts /ts
 
-FROM almir/webhook:${WEBHOOK_VERSION} as webhook
+FROM almir/webhook:${WEBHOOK_VERSION} AS webhook
 
-FROM composer/satis
+FROM composer/satis AS satis
 ARG SATIS_SERVER_VERSION
 LABEL maintainer="Łukasz Lach <llach@llach.pl>" \
     org.label-schema.name="satis-server" \
@@ -25,7 +25,8 @@ LABEL maintainer="Łukasz Lach <llach@llach.pl>" \
 ENV SATIS_SERVER_VERSION ${SATIS_SERVER_VERSION:-dev-main}
 WORKDIR /satis-server
 
-RUN apk -U add jq nginx tini php8.1 php8.1-fpm && \
+RUN apk update && \
+    apk -U add jq nginx tini php82 php82-fpm && \
     rm -rf /var/cache/apk/* /etc/nginx/conf.d/* && \
     echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config && \
     mkdir -p /root/.ssh/satis-server /etc/webhook
