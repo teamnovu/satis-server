@@ -20,6 +20,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Generate Docs
+        run: |
+            docker run -v `pwd`:/source jagregory/pandoc --toc -c docs.css --self-contained -f markdown_github -t html5 README.md -o README.html
+            sed '/^\[!\[/d; /^!\[/d' README.md > README.txt
+
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
