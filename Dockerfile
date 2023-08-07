@@ -13,7 +13,10 @@ RUN apk add -U wget make gcc linux-headers g++ && \
 FROM almir/webhook:${WEBHOOK_VERSION} AS webhook
 
 FROM composer/satis AS satis
+
 ARG SATIS_SERVER_VERSION
+ENV SATIS_SERVER_VERSION ${SATIS_SERVER_VERSION:-dev-main}
+
 LABEL maintainer="Łukasz Lach <llach@llach.pl>" \
     org.label-schema.name="satis-server" \
     org.label-schema.description="Satis Server" \
@@ -22,7 +25,6 @@ LABEL maintainer="Łukasz Lach <llach@llach.pl>" \
     org.label-schema.vcs-url="https://github.com/lukaszlach/satis-server" \
     org.label-schema.version="${SATIS_SERVER_VERSION:-dev-main}" \
     org.label-schema.schema-version="1.1"
-ENV SATIS_SERVER_VERSION ${SATIS_SERVER_VERSION:-dev-main}
 WORKDIR /satis-server
 
 RUN apk update && \
@@ -52,7 +54,8 @@ RUN apk update && \
     nginx -t
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-    chmod +x /usr/local/bin/composer
+    chmod +x /usr/local/bin/composer \
+    && composer config --global gitlab-token.gitlab.com $GITLAB_TOKEN
 
 ADD . .
 ADD src/auth.php /var/www/html
