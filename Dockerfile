@@ -54,8 +54,7 @@ RUN apk update && \
     nginx -t
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-    chmod +x /usr/local/bin/composer \
-    && composer config --global gitlab-token.gitlab.com $GITLAB_TOKEN
+    chmod +x /usr/local/bin/composer
 
 ADD . .
 ADD src/auth.php /var/www/html
