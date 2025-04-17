@@ -7,7 +7,7 @@
     "pass-arguments-to-command": [
       {
         "source": "payload",
-        "name": "repository.url"
+        "name": "repository.svn_url"
       }
     ],
     "pass-environment-to-command": [
